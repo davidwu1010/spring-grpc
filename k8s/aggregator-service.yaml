@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aggregator-service
+  labels:
+    app: aggregator-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aggregator-service
+  template:
+    metadata:
+      labels:
+        app: aggregator-service
+    spec:
+      containers:
+        - name: aggregator-service
+          image: spring-grpc/aggregator-service
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-balancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: aggregator-service
+  ports:
+    - port: 80
+      targetPort: 8080
